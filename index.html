@@ -17,24 +17,45 @@
             margin: 0;
             padding: 0;
             width: 100vw;
-            height: 100vh;
-            background-color: black;
-            overflow: hidden;
+            min-height: 100vh;
+            background-color: #0a0a0a;
             color: white;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        .page-title {
+            padding: 2rem;
+            font-size: 2em;
+            color: #fff;
+            border-bottom: 1px solid #333;
+            margin-bottom: 2rem;
+        }
+        
+        .benchmark-section {
+            margin-bottom: 4rem;
+        }
+        
+        .benchmark-title {
+            padding: 1rem 2rem;
+            font-size: 1.4em;
+            color: #888;
+            margin-bottom: 1rem;
         }
         
         .container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             width: 100%;
-            height: 100vh;
+            min-height: 60vh;
             gap: 1px;
-            background-color: #333;
+            background-color: #222;
+            margin-bottom: 2rem;
         }
         
         .column {
-            background-color: black;
+            background-color: #0a0a0a;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -44,7 +65,7 @@
             padding: 10px;
             text-align: center;
             font-size: 1.2em;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid #222;
             width: 100%;
         }
         
@@ -66,23 +87,28 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="column">
-            <div class="title">Claude 3.5 Sonnet</div>
-            <div class="content">
-                <div id="root-sonnet"></div>
+    <h1 class="page-title">A visual comparison of LLMs</h1>
+    
+    <div class="benchmark-section">
+        <h2 class="benchmark-title">Benchmark: Rotating Hexagon With a Bouncing Ball</h2>
+        <div class="container">
+            <div class="column">
+                <div class="title">Claude 3.5 Sonnet</div>
+                <div class="content">
+                    <div id="root-sonnet"></div>
+                </div>
             </div>
-        </div>
-        <div class="column">
-            <div class="title">DeepSeek R1</div>
-            <div class="content">
-                <div id="root-deepseek"></div>
+            <div class="column">
+                <div class="title">DeepSeek R1</div>
+                <div class="content">
+                    <div id="root-deepseek"></div>
+                </div>
             </div>
-        </div>
-        <div class="column">
-            <div class="title">OpenAI O3 Mini</div>
-            <div class="content">
-                <div id="root-openai"></div>
+            <div class="column">
+                <div class="title">OpenAI O3 Mini</div>
+                <div class="content">
+                    <div id="root-openai"></div>
+                </div>
             </div>
         </div>
     </div>
