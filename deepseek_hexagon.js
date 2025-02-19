@@ -1,108 +1,112 @@
 const { useRef, useEffect } = React;
+const Deepseek_Hexagon = () => {
+  const canvasRef = useRef(null);
+  const rotation = useRef(0);
+  const ballPos = useRef({ x: 0, y: 0 });
+  const ballVel = useRef({ x: 0, y: 0 });
+  const lastTime = useRef(performance.now());
 
-const BouncingBall = () => {
-    const canvasRef = React.useRef(null);
-    const animationRef = React.useRef(null);
-    const rotationRef = React.useRef(0);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const center = { x: canvas.width/2, y: canvas.height/2 };
+    let animationFrameId;
     
-    const stateRef = React.useRef({
-      pos: { x: 200, y: 200 },
-      vel: { x: 3, y: 0 },
-      gravity: 0.5,
-      dampen: 0.8,
-      radius: 10,
-      hexRadius: 160
-    });
-  
-    const getHexagonPoints = (angle) => {
-      const points = [];
-      const center = { x: 200, y: 200 };
-      for (let i = 0; i < 6; i++) {
-        const theta = angle + (i * Math.PI / 3);
-        points.push({
-          x: center.x + stateRef.current.hexRadius * Math.sin(theta),
-          y: center.y + stateRef.current.hexRadius * Math.cos(theta)
-        });
-      }
-      return points;
-    };
-  
-    const checkCollision = (ctx) => {
-      const points = getHexagonPoints(rotationRef.current * Math.PI / 180);
-      const ball = stateRef.current;
-      
-      for (let i = 0; i < 6; i++) {
-        const p1 = points[i];
-        const p2 = points[(i+1)%6];
-        
-        // Line equation: ax + by + c = 0
-        const a = p2.y - p1.y;
-        const b = p1.x - p2.x;
-        const c = p2.x * p1.y - p1.x * p2.y;
-        
-        // Distance from ball center to line
-        const dist = (a * ball.pos.x + b * ball.pos.y + c) / Math.sqrt(a*a + b*b);
-        
-        if (Math.abs(dist) <= ball.radius) {
-          // Reflect velocity vector
-          const normal = { x: a, y: b };
-          const dot = ball.vel.x * normal.x + ball.vel.y * normal.y;
-          ball.vel.x = (ball.vel.x - 2 * dot * normal.x / (normal.x**2 + normal.y**2)) * ball.dampen;
-          ball.vel.y = (ball.vel.y - 2 * dot * normal.y / (normal.x**2 + normal.y**2)) * ball.dampen;
-        }
-      }
-    };
-  
-    const animate = () => {
-      const ctx = canvasRef.current.getContext('2d');
-      const ball = stateRef.current;
-      
-      // Clear canvas
-      ctx.clearRect(0, 0, 400, 400);
-      
-      // Draw hexagon
-      ctx.save();
+    // Hexagon geometry
+    const hexRadius = 150;
+    const ballRadius = 10;
+    const gravity = 0.5;
+    const damping = 0.8;
+    
+    // Initialize ball position
+    ballPos.current = { x: center.x, y: center.y - hexRadius * 0.8 };
+    ballVel.current = { x: 2, y: 0 };
+
+    const drawHexagon = (angle) => {
       ctx.strokeStyle = 'white';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 3;
       ctx.beginPath();
-      const points = getHexagonPoints(rotationRef.current * Math.PI / 180);
-      points.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+      for (let i = 0; i < 6; i++) {
+        const x = center.x + hexRadius * Math.cos(angle + i * Math.PI/3);
+        const y = center.y + hexRadius * Math.sin(angle + i * Math.PI/3);
+        ctx[i === 0 ? 'moveTo' : 'lineTo'](x, y);
+      }
       ctx.closePath();
       ctx.stroke();
-      ctx.restore();
+    };
+
+    const checkHexagonCollision = (pos, angle) => {
+      const rotatedX = (pos.x - center.x) * Math.cos(-angle) - (pos.y - center.y) * Math.sin(-angle);
+      const rotatedY = (pos.x - center.x) * Math.sin(-angle) + (pos.y - center.y) * Math.cos(-angle);
+      const distance = Math.sqrt(rotatedX**2 + rotatedY**2);
+      const maxDist = hexRadius - ballRadius - 2;
+
+      if (distance > maxDist) {
+        const angleToCenter = Math.atan2(rotatedY, rotatedX);
+        const collisionPoint = {
+          x: maxDist * Math.cos(angleToCenter),
+          y: maxDist * Math.sin(angleToCenter)
+        };
+        
+        const surfaceNormal = {
+          x: collisionPoint.x / maxDist,
+          y: collisionPoint.y / maxDist
+        };
+        
+        const rotatedNormal = {
+          x: surfaceNormal.x * Math.cos(angle) - surfaceNormal.y * Math.sin(angle),
+          y: surfaceNormal.x * Math.sin(angle) + surfaceNormal.y * Math.cos(angle)
+        };
+
+        const dotProduct = ballVel.current.x * rotatedNormal.x + ballVel.current.y * rotatedNormal.y;
+        ballVel.current.x = (ballVel.current.x - 2 * dotProduct * rotatedNormal.x) * damping;
+        ballVel.current.y = (ballVel.current.y - 2 * dotProduct * rotatedNormal.y) * damping;
+
+        pos.x = center.x + collisionPoint.x * Math.cos(angle) - collisionPoint.y * Math.sin(angle);
+        pos.y = center.y + collisionPoint.x * Math.sin(angle) + collisionPoint.y * Math.cos(angle);
+      }
+    };
+
+    const animate = (timestamp) => {
+      const deltaTime = (timestamp - lastTime.current) / 16;
+      lastTime.current = timestamp;
+      
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       
       // Update physics
-      ball.vel.y += ball.gravity;
-      ball.pos.x += ball.vel.x;
-      ball.pos.y += ball.vel.y;
+      ballVel.current.y += gravity * (deltaTime / 16);
+      ballPos.current.x += ballVel.current.x * (deltaTime / 16);
+      ballPos.current.y += ballVel.current.y * (deltaTime / 16);
       
-      // Check collisions
-      checkCollision(ctx);
+      // Update rotation
+      rotation.current += Math.PI / 360 * (deltaTime / 16);
+      
+      // Collision detection
+      checkHexagonCollision(ballPos.current, rotation.current);
+      
+      // Draw elements
+      drawHexagon(rotation.current);
       
       // Draw ball
       ctx.beginPath();
-      ctx.arc(ball.pos.x, ball.pos.y, ball.radius, 0, Math.PI * 2);
-      ctx.fillStyle = 'blue';
+      ctx.arc(ballPos.current.x, ballPos.current.y, ballRadius, 0, Math.PI * 2);
+      ctx.fillStyle = '#00f';
       ctx.fill();
       
-      rotationRef.current += 0.5;
-      animationRef.current = requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
     };
-  
-    React.useEffect(() => {
-      animationRef.current = requestAnimationFrame(animate);
-      return () => cancelAnimationFrame(animationRef.current);
-    }, []);
-  
-    return (
-      <canvas
-        ref={canvasRef}
-        width={400}
-        height={400}
-        style={{ backgroundColor: 'black' }}
-      />
-    );
-  };
-  
-  window.DeepSeekHexagon = BouncingBall;
-  
+
+    animationFrameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
+
+  return React.createElement('canvas', {
+    ref: canvasRef,
+    width: 400,
+    height: 400,
+    style: { display: 'block' }
+  });
+};
+
+window.Deepseek_Hexagon = Deepseek_Hexagon;

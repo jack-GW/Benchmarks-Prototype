@@ -255,9 +255,9 @@
         function restartSimulation(rootId) {
             const root = ReactDOM.createRoot(document.getElementById(rootId));
             const componentMap = {
-                'root-sonnet': window.ClaudeHexagon,
-                'root-deepseek': window.DeepSeekHexagon,
-                'root-openai': window.OpenAIHexagon,
+                'root-sonnet': window.Claude_Hexagon,
+                'root-deepseek': window.Deepseek_Hexagon,
+                'root-openai': window.OpenAI_Hexagon,
                 'root-sonnet-rocket': window.Claude_Rocket,
                 'root-deepseek-rocket': window.DeepSeek_Rocket,
                 'root-openai-rocket': window.OpenAI_Rocket
@@ -281,13 +281,13 @@
         setTimeout(() => {
             // Initialize Hexagon components
             const rootSonnet = ReactDOM.createRoot(document.getElementById('root-sonnet'));
-            rootSonnet.render(React.createElement(window.ClaudeHexagon));
+            rootSonnet.render(React.createElement(window.Claude_Hexagon));
             
             const rootDeepseek = ReactDOM.createRoot(document.getElementById('root-deepseek'));
-            rootDeepseek.render(React.createElement(window.DeepSeekHexagon));
+            rootDeepseek.render(React.createElement(window.Deepseek_Hexagon));
             
             const rootOpenai = ReactDOM.createRoot(document.getElementById('root-openai'));
-            rootOpenai.render(React.createElement(window.OpenAIHexagon));
+            rootOpenai.render(React.createElement(window.OpenAI_Hexagon));
 
             // Initialize Rocket components
             const rootSonnetRocket = ReactDOM.createRoot(document.getElementById('root-sonnet-rocket'));

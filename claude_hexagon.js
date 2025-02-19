@@ -1,137 +1,182 @@
 const { useRef, useEffect } = React;
 
-const ClaudeHexagon = () => {
+const Claude_Hexagon = () => {
   const canvasRef = useRef(null);
-  const ballRef = useRef({
-    x: 200,
-    y: 200,
-    vx: 3,
-    vy: 0,
-    radius: 10
+  const requestIdRef = useRef(null);
+  
+  // Physics and animation state
+  const state = useRef({
+    ballX: 0,
+    ballY: 0,
+    velocityX: 2,
+    velocityY: 0,
+    gravity: 0.5,
+    damping: 0.8,
+    rotation: 0
   });
-  const hexagonRef = useRef({
-    angle: 0,
-    radius: 160,
-    rotation: 0.5 * Math.PI / 180
-  });
 
-  const drawHexagon = (ctx, center, radius, angle) => {
-    ctx.beginPath();
-    ctx.strokeStyle = 'white';
-    ctx.lineWidth = 2;
-    
-    for (let i = 0; i < 6; i++) {
-      const theta = angle + (i * Math.PI / 3);
-      const x = center.x + radius * Math.cos(theta);
-      const y = center.y + radius * Math.sin(theta);
-      
-      if (i === 0) {
-        ctx.moveTo(x, y);
-      } else {
-        ctx.lineTo(x, y);
-      }
-    }
-    
-    ctx.closePath();
-    ctx.stroke();
-  };
-
-  const checkHexagonCollision = (ball, hexagon) => {
-    const center = { x: 200, y: 200 };
-    
-    for (let i = 0; i < 6; i++) {
-      const theta1 = hexagon.angle + (i * Math.PI / 3);
-      const theta2 = hexagon.angle + ((i + 1) * Math.PI / 3);
-      
-      const p1 = {
-        x: center.x + hexagon.radius * Math.cos(theta1),
-        y: center.y + hexagon.radius * Math.sin(theta1)
-      };
-      
-      const p2 = {
-        x: center.x + hexagon.radius * Math.cos(theta2),
-        y: center.y + hexagon.radius * Math.sin(theta2)
-      };
-
-      // Line segment vector
-      const segmentX = p2.x - p1.x;
-      const segmentY = p2.y - p1.y;
-      const length = Math.sqrt(segmentX * segmentX + segmentY * segmentY);
-      
-      // Normalized perpendicular vector
-      const nx = -segmentY / length;
-      const ny = segmentX / length;
-      
-      // Vector from line to ball
-      const dx = ball.x - p1.x;
-      const dy = ball.y - p1.y;
-      
-      // Distance from line
-      const distance = dx * nx + dy * ny;
-      
-      if (Math.abs(distance) < ball.radius) {
-        // Project ball's velocity onto the normal
-        const dotProduct = ball.vx * nx + ball.vy * ny;
-        
-        // Apply bounce with energy loss
-        ball.vx -= 2 * dotProduct * nx * 0.8;
-        ball.vy -= 2 * dotProduct * ny * 0.8;
-        
-        // Move ball out of collision
-        ball.x += nx * (ball.radius - Math.abs(distance));
-        ball.y += ny * (ball.radius - Math.abs(distance));
-        
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const animate = () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    const ball = ballRef.current;
-    const hexagon = hexagonRef.current;
-
-    // Clear canvas
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Draw rotating hexagon
-    drawHexagon(ctx, { x: 200, y: 200 }, hexagon.radius, hexagon.angle);
-    hexagon.angle += hexagon.rotation;
-
-    // Update ball position with gravity
-    ball.vy += 0.5; // Gravity
-    ball.x += ball.vx;
-    ball.y += ball.vy;
-
-    // Check collision
-    checkHexagonCollision(ball, hexagon);
-
-    // Draw ball
-    ctx.beginPath();
-    ctx.fillStyle = 'red';
-    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    ctx.fill();
-
-    requestAnimationFrame(animate);
-  };
-
+  // Initialize the canvas and start animation
   useEffect(() => {
     const canvas = canvasRef.current;
-    canvas.width = 400;
-    canvas.height = 400;
+    const ctx = canvas.getContext('2d');
     
-    // Start animation
-    animate();
-  }, []);
+    // Set initial ball position to center
+    state.current.ballX = canvas.width / 2;
+    state.current.ballY = canvas.height / 2;
 
-  return (
-    React.createElement('div', { className: 'w-[400px] h-[400px]' },
-      React.createElement('canvas', { ref: canvasRef, className: 'border border-gray-300' })
-    )
-  );
+    const animate = () => {
+      // Clear canvas
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Save context for rotation
+      ctx.save();
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(state.current.rotation);
+      
+      // Draw hexagon
+      ctx.beginPath();
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 6; i++) {
+        const angle = (i * Math.PI * 2) / 6;
+        const x = 150 * Math.cos(angle);
+        const y = 150 * Math.sin(angle);
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.closePath();
+      ctx.stroke();
+      
+      // Restore context for ball physics
+      ctx.restore();
+      
+      // Update ball physics
+      state.current.velocityY += state.current.gravity;
+      state.current.ballY += state.current.velocityY;
+      state.current.ballX += state.current.velocityX;
+      
+      // Check collisions with rotated hexagon boundaries
+      const ballPos = rotatePoint(
+        state.current.ballX - canvas.width / 2,
+        state.current.ballY - canvas.height / 2,
+        -state.current.rotation
+      );
+      
+      // Collision detection with hexagon sides
+      for (let i = 0; i < 6; i++) {
+        const angle1 = (i * Math.PI * 2) / 6;
+        const angle2 = ((i + 1) * Math.PI * 2) / 6;
+        const p1 = { x: 150 * Math.cos(angle1), y: 150 * Math.sin(angle1) };
+        const p2 = { x: 150 * Math.cos(angle2), y: 150 * Math.sin(angle2) };
+        
+        const collision = lineCircleCollision(
+          p1, p2,
+          { x: ballPos.x, y: ballPos.y },
+          10
+        );
+        
+        if (collision) {
+          const normal = normalizeVector({
+            x: -(p2.y - p1.y),
+            y: p2.x - p1.x
+          });
+          
+          const rotatedVelocity = rotatePoint(
+            state.current.velocityX,
+            state.current.velocityY,
+            -state.current.rotation
+          );
+          
+          // Reflect velocity
+          const dot = rotatedVelocity.x * normal.x + rotatedVelocity.y * normal.y;
+          rotatedVelocity.x = (rotatedVelocity.x - 2 * dot * normal.x) * state.current.damping;
+          rotatedVelocity.y = (rotatedVelocity.y - 2 * dot * normal.y) * state.current.damping;
+          
+          const finalVelocity = rotatePoint(
+            rotatedVelocity.x,
+            rotatedVelocity.y,
+            state.current.rotation
+          );
+          
+          state.current.velocityX = finalVelocity.x;
+          state.current.velocityY = finalVelocity.y;
+          
+          // Adjust position to prevent sticking
+          const adjustedPos = rotatePoint(
+            ballPos.x + normal.x * 2,
+            ballPos.y + normal.y * 2,
+            state.current.rotation
+          );
+          
+          state.current.ballX = adjustedPos.x + canvas.width / 2;
+          state.current.ballY = adjustedPos.y + canvas.height / 2;
+        }
+      }
+      
+      // Draw ball
+      ctx.beginPath();
+      ctx.fillStyle = 'orange';
+      ctx.arc(state.current.ballX, state.current.ballY, 10, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Update rotation
+      state.current.rotation += 0.005;
+      
+      requestIdRef.current = requestAnimationFrame(animate);
+    };
+    
+    animate();
+    
+    return () => {
+      cancelAnimationFrame(requestIdRef.current);
+    };
+  }, []);
+  
+  return React.createElement('canvas', {
+    ref: canvasRef,
+    width: 400,
+    height: 400,
+    style: {
+      display: 'block'
+    }
+  });
 };
 
-window.ClaudeHexagon = ClaudeHexagon;
+// Helper functions
+function rotatePoint(x, y, angle) {
+  return {
+    x: x * Math.cos(angle) - y * Math.sin(angle),
+    y: x * Math.sin(angle) + y * Math.cos(angle)
+  };
+}
+
+function normalizeVector(v) {
+  const length = Math.sqrt(v.x * v.x + v.y * v.y);
+  return {
+    x: v.x / length,
+    y: v.y / length
+  };
+}
+
+function lineCircleCollision(p1, p2, circle, radius) {
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+  const length = Math.sqrt(dx * dx + dy * dy);
+  const dot = (((circle.x - p1.x) * dx) + ((circle.y - p1.y) * dy)) / Math.pow(length, 2);
+  const closestX = p1.x + (dot * dx);
+  const closestY = p1.y + (dot * dy);
+  
+  if (dot < 0 || dot > 1) return false;
+  
+  const distance = Math.sqrt(
+    Math.pow(closestX - circle.x, 2) + Math.pow(closestY - circle.y, 2)
+  );
+  
+  return distance <= radius;
+}
+
+window.Claude_Hexagon = Claude_Hexagon;
