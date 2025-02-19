@@ -9,71 +9,80 @@
         body {
             margin: 0;
             padding: 0;
-            width: 100vw;
+            width: 100%;
             min-height: 100vh;
             background-color: #0a0a0a;
             color: white;
             font-family: 'Courier New', monospace;
-            overflow-y: auto;
-            overflow-x: hidden;
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
         
         .page-title {
-            padding: 2rem;
-            font-size: 2em;
+            padding: 3rem;
+            font-size: 2.5em;
             color: #fff;
             border-bottom: 1px solid #333;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
             font-family: 'Courier New', monospace;
             font-weight: normal;
+            text-align: center;
         }
         
         .methodology-section {
-            margin-bottom: 4rem;
+            max-width: 1000px;
+            margin: 0 auto 5rem auto;
             padding: 0 2rem;
         }
         
         .benchmark-title {
-            padding: 1rem 0;
-            font-size: 1.4em;
-            color: rgb(200, 200, 200);
-            margin-bottom: 1rem;
+            padding: 1.5rem 0;
+            font-size: 1.6em;
+            color: rgb(220, 220, 220);
+            margin-bottom: 1.5rem;
             font-family: 'Courier New', monospace;
             font-weight: normal;
         }
         
         .prompt-container {
             background-color: #111;
-            border: 1px solid #333;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border-radius: 4px;
+            border: 1px solid #444;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            min-height: 500px; /* Ensure consistent height */
+            display: flex;
+            flex-direction: column;
         }
         
         .models-tested {
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
+            color: #888;
+            font-size: 1em;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
             border-bottom: 1px solid #333;
         }
         
         .prompt-content {
-            color: #ccc;
+            color: #ddd;
             white-space: pre-wrap;
-            line-height: 1.6;
+            line-height: 1.8;
+            font-size: 1.1em;
+            flex-grow: 1; /* Allow content to fill available space */
         }
         
         .methodology-notes {
-            color: #888;
-            font-size: 0.9em;
-            line-height: 1.6;
-            margin-top: 2rem;
-            padding: 1rem;
+            color: #aaa;
+            font-size: 1em;
+            line-height: 1.8;
+            margin-top: 3rem;
+            padding: 2rem;
             background-color: #111;
-            border-radius: 4px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         h1, h2 {
@@ -82,7 +91,33 @@
         }
 
         .model-name {
-            color: #888;
+            color: #aaa;
+            font-weight: bold;
+        }
+        
+        .methodology-notes strong {
+            color: #fff;
+            display: block;
+            margin-bottom: 1rem;
+            font-size: 1.1em;
+        }
+        
+        .methodology-notes-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem; /* Add space between notes */
+        }
+        
+        .methodology-note-item {
+            padding-left: 1.5em;
+            position: relative;
+        }
+        
+        .methodology-note-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #666;
         }
     </style>
 </head>
@@ -115,6 +150,7 @@ Ball color: WRITE HERE
 
 The animation style and additional effects are up to you. Focus on creating something that performs well and realistically according to gravity with no clipping. Your model name is MODELNAME.
 So use: MODELNAME_Hexagon
+            </div>
         </div>
     </div>
 
@@ -149,12 +185,14 @@ So use: MODELNAME_Rocket</div>
 
         <div class="methodology-notes">
             <strong>Methodology Notes:</strong>
-            • Each prompt was used verbatim across all models
-            • No additional context or examples were provided
-            • Each model was given a single attempt to generate the component
-            • Minor modifications were made once or twice, but only to ensure that the display matches up (has parity with the syntax in index.html and not affecting any of the code)
-            • I accsessed O3mini and Claude3.5 through their websites, and R1 through Perplexity
-            • I used different colors for differeent models in physics based experiments
+            <div class="methodology-notes-content">
+                <div class="methodology-note-item">Each prompt was used verbatim across all models</div>
+                <div class="methodology-note-item">No additional context or examples were provided</div>
+                <div class="methodology-note-item">Each model was given a single attempt to generate the component</div>
+                <div class="methodology-note-item">Minor modifications were made once or twice, but only to ensure that the display matches up (has parity with the syntax in index.html and not affecting any of the code)</div>
+                <div class="methodology-note-item">I accsessed O3mini and Claude3.5 through their websites, and R1 through Perplexity</div>
+                <div class="methodology-note-item">I used different colors for differeent models in physics based experiments</div>
+            </div>
         </div>
     </div>
 </body>
