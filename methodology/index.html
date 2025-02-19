@@ -96,14 +96,25 @@
             <div class="models-tested">
                 Tested on: <span class="model-name">Claude 3.5 Sonnet</span> • <span class="model-name">DeepSeek R1</span> • <span class="model-name">OpenAI O3 Mini</span>
             </div>
-            <div class="prompt-content">Create a React component that renders an SVG containing:
-1. A regular hexagon that rotates continuously
-2. A ball that bounces within the hexagon's boundaries
-3. The ball should leave a fading trail as it moves
+            <div class="prompt-content">Create a React component that animates a ball bouncing with realistic gravity within a rotating white hexagon on a black background using HTML5 Canvas. our code must follow this exact structure:
+javascript
+const { useRef, useEffect } = React;
+const MODELNAME_Hexagon = () => {
+    // Your implementation here
+};
+window.MODELNAME_Hexagon = MODELNAME_Hexagon;
 
-The component should use only Tailwind's core utility classes for any styling needed.
+Requirements:
+Use a 400x400 canvas with no bordeer
+Must use React.createElement (no JSX)
+Component and window export names must match exactly as shown
+Implement smooth animation with requestAnimationFrame
+Hexagon size should be 150px from center to vertex, with 3pixel line thickness
+Ball size should be 10px radius
+Ball color: WRITE HERE
 
-Use requestAnimationFrame for smooth animation and proper collision detection with the hexagon's edges.</div>
+The animation style and additional effects are up to you. Focus on creating something that performs well and realistically according to gravity with no clipping. Your model name is MODELNAME.
+So use: MODELNAME_Hexagon
         </div>
     </div>
 
@@ -143,6 +154,7 @@ So use: MODELNAME_Rocket</div>
             • Each model was given a single attempt to generate the component
             • Minor modifications were made once or twice, but only to ensure that the display matches up (has parity with the syntax in index.html and not affecting any of the code)
             • I accsessed O3mini and Claude3.5 through their websites, and R1 through Perplexity
+            • I used different colors for differeent models in physics based experiments
         </div>
     </div>
 </body>
