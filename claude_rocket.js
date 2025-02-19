@@ -1,89 +1,124 @@
-const ClaudeRocket = () => {
+const { useRef, useEffect } = React;
+
+const Claude_Rocket = () => {
   const canvasRef = useRef(null);
+  const requestIdRef = useRef(null);
   
-  useEffect(() => {
+  // Animation state
+  const rocketRef = useRef({
+    x: 200,
+    y: 380,
+    velocity: 0,
+    acceleration: 0.2
+  });
+  
+  const particlesRef = useRef([]);
+  
+  const createParticle = (x, y) => ({
+    x,
+    y,
+    vx: (Math.random() - 0.5) * 3,
+    vy: Math.random() * 4 + 2,
+    life: 1,
+    color: `hsl(${Math.random() * 60 + 10}, 100%, 60%)`
+  });
+  
+  const updateParticles = (ctx) => {
+    const particles = particlesRef.current;
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 0.02;
+      
+      if (p.life <= 0) {
+        particles.splice(i, 1);
+        continue;
+      }
+      
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.life * 3, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.life;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  };
+  
+  const drawRocket = (ctx) => {
+    const rocket = rocketRef.current;
+    
+    // Draw rocket body
+    ctx.fillStyle = '#e6e6e6';
+    ctx.beginPath();
+    ctx.moveTo(rocket.x, rocket.y - 30);
+    ctx.lineTo(rocket.x - 10, rocket.y);
+    ctx.lineTo(rocket.x + 10, rocket.y);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Draw fins
+    ctx.fillStyle = '#cc0000';
+    ctx.beginPath();
+    ctx.moveTo(rocket.x - 10, rocket.y);
+    ctx.lineTo(rocket.x - 15, rocket.y + 10);
+    ctx.lineTo(rocket.x - 10, rocket.y + 10);
+    ctx.closePath();
+    ctx.fill();
+    
+    ctx.beginPath();
+    ctx.moveTo(rocket.x + 10, rocket.y);
+    ctx.lineTo(rocket.x + 15, rocket.y + 10);
+    ctx.lineTo(rocket.x + 10, rocket.y + 10);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Add flame particles
+    for (let i = 0; i < 3; i++) {
+      particlesRef.current.push(
+        createParticle(
+          rocket.x + (Math.random() - 0.5) * 6,
+          rocket.y + 10
+        )
+      );
+    }
+  };
+  
+  const animate = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     
-    // Rocket properties
-    let rocketY = 400;
-    let particles = [];
+    // Clear canvas
+    ctx.fillStyle = '#000033';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Particle class for flame effects
-    class Particle {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.vx = (Math.random() - 0.5) * 2;
-        this.vy = Math.random() * 3 + 1;
-        this.alpha = 1;
-        this.size = Math.random() * 3 + 2;
-      }
-      
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.alpha -= 0.02;
-        this.size -= 0.1;
-      }
-      
-      draw(ctx) {
-        ctx.save();
-        ctx.globalAlpha = this.alpha;
-        ctx.fillStyle = `rgba(255, ${Math.random() * 100 + 100}, 0, ${this.alpha})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
+    // Update rocket position
+    const rocket = rocketRef.current;
+    rocket.velocity += rocket.acceleration;
+    rocket.y -= rocket.velocity;
+    
+    // Draw stars
+    for (let i = 0; i < 50; i++) {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(x, y, 1, 1);
     }
     
-    // Animation loop
-    const animate = () => {
-      ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, 400, 400);
-      
-      // Draw rocket
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      ctx.moveTo(190, rocketY);
-      ctx.lineTo(210, rocketY);
-      ctx.lineTo(200, rocketY - 30);
-      ctx.closePath();
-      ctx.fill();
-      
-      // Add new particles
-      if (rocketY > 100) {
-        for (let i = 0; i < 3; i++) {
-          particles.push(new Particle(
-            200 + (Math.random() - 0.5) * 10,
-            rocketY + 5
-          ));
-        }
-      }
-      
-      // Update and draw particles
-      particles = particles.filter(particle => particle.alpha > 0);
-      particles.forEach(particle => {
-        particle.update();
-        particle.draw(ctx);
-      });
-      
-      // Move rocket
-      if (rocketY > 100) {
-        rocketY -= 2;
-      }
-      
-      // Request next frame
-      requestAnimationFrame(animate);
-    };
+    // Update and draw particles
+    updateParticles(ctx);
     
-    // Start animation
-    animate();
-    
-    // Cleanup
+    // Draw rocket if still in view
+    if (rocket.y > -50) {
+      drawRocket(ctx);
+      requestIdRef.current = requestAnimationFrame(animate);
+    }
+  };
+  
+  useEffect(() => {
+    requestIdRef.current = requestAnimationFrame(animate);
     return () => {
-      particles = [];
+      cancelAnimationFrame(requestIdRef.current);
     };
   }, []);
   
@@ -92,9 +127,9 @@ const ClaudeRocket = () => {
     width: 400,
     height: 400,
     style: {
-      border: '1px solid #333'
+      border: '1px solid #000'
     }
   });
 };
 
-window.ClaudeRocket = ClaudeRocket;
+window.Claude_Rocket = Claude_Rocket;
