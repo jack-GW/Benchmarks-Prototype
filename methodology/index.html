@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Benchmark Methodology</title>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            min-height: 100vh;
+            background-color: #0a0a0a;
+            color: white;
+            font-family: 'Courier New', monospace;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .page-title {
+            padding: 2rem;
+            font-size: 2em;
+            color: #fff;
+            border-bottom: 1px solid #333;
+            margin-bottom: 2rem;
+            font-family: 'Courier New', monospace;
+            font-weight: normal;
+        }
+        
+        .methodology-section {
+            margin-bottom: 4rem;
+            padding: 0 2rem;
+        }
+        
+        .benchmark-title {
+            padding: 1rem 0;
+            font-size: 1.4em;
+            color: rgb(200, 200, 200);
+            margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
+            font-weight: normal;
+        }
+        
+        .prompt-container {
+            background-color: #111;
+            border: 1px solid #333;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 4px;
+        }
+        
+        .models-tested {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #333;
+        }
+        
+        .prompt-content {
+            color: #ccc;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+        
+        .methodology-notes {
+            color: #888;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #111;
+            border-radius: 4px;
+        }
+
+        h1, h2 {
+            font-family: 'Courier New', monospace;
+            font-weight: normal;
+        }
+
+        .model-name {
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="page-title">Methodology</h1>
+    
+    <div class="methodology-section">
+        <h2 class="benchmark-title">Benchmark: Rotating Hexagon With a Bouncing Ball</h2>
+        
+        <div class="prompt-container">
+            <div class="models-tested">
+                Tested on: <span class="model-name">Claude 3.5 Sonnet</span> • <span class="model-name">DeepSeek R1</span> • <span class="model-name">OpenAI O3 Mini</span>
+            </div>
+            <div class="prompt-content">Create a React component that renders an SVG containing:
+1. A regular hexagon that rotates continuously
+2. A ball that bounces within the hexagon's boundaries
+3. The ball should leave a fading trail as it moves
+
+The component should use only Tailwind's core utility classes for any styling needed.
+
+Use requestAnimationFrame for smooth animation and proper collision detection with the hexagon's edges.</div>
+        </div>
+    </div>
+
+    <div class="methodology-section">
+        <h2 class="benchmark-title">Benchmark: Animated Rocket Launch</h2>
+        
+        <div class="prompt-container">
+            <div class="models-tested">
+                Tested on: <span class="model-name">Claude 3.5 Sonnet</span> • <span class="model-name">DeepSeek R1</span> • <span class="model-name">OpenAI O3 Mini</span>
+            </div>
+            <div class="prompt-content">Create a React component that animates a rocket launch sequence:
+1. Show a simple rocket on a launch pad
+2. Animate launch preparation with countdown
+3. Show engine ignition with particle effects
+4. Animate the rocket lifting off with smoke trails
+5. Include stars in the background that parallax scroll
+
+The component should use only Tailwind's core utility classes for any styling needed.
+
+Use requestAnimationFrame for smooth animation and handle all particle effects within the SVG.</div>
+        </div>
+
+        <div class="methodology-notes">
+            <strong>Methodology Notes:</strong>
+            • Each prompt was used verbatim across all models
+            • No additional context or examples were provided
+            • Each model was given a single attempt to generate the component
+            • No modifications or corrections were made to the generated code
+            • All components use the same core libraries and restrictions
+            • Performance metrics were measured in Chrome 120 on standardized hardware
+        </div>
+    </div>
+</body>
+</html>

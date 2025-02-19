@@ -147,6 +147,31 @@
             color: #fff;
             border-color: #fff;
         }
+
+        .footer-nav {
+            padding: 2rem;
+            border-top: 1px solid #333;
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid #333;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-size: 0.9em;
+        }
+        
+        .nav-link:hover {
+            color: #fff;
+            border-color: #fff;
+            background: #222;
+        }
     </style>
 </head>
 <body>
@@ -200,6 +225,11 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="footer-nav">
+        <a href="/methodology" class="nav-link">View Methodology</a>
+        <a href="https://jackgw.com" class="nav-link">My site</a>
     </div>
 
     <!-- Load components -->
