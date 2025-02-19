@@ -20,9 +20,11 @@
             min-height: 100vh;
             background-color: #0a0a0a;
             color: white;
-            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            font-family: 'Courier New', monospace;
             overflow-y: auto;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
         .page-title {
@@ -31,17 +33,22 @@
             color: #fff;
             border-bottom: 1px solid #333;
             margin-bottom: 2rem;
+            font-family: 'Courier New', monospace;
+            font-weight: normal;
         }
         
         .benchmark-section {
             margin-bottom: 4rem;
+            position: relative;
         }
         
         .benchmark-title {
             padding: 1rem 2rem;
             font-size: 1.4em;
-            color: #888;
+            color: rgb(200, 200, 200);
             margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
+            font-weight: normal;
         }
         
         .container {
@@ -59,6 +66,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
         }
         
         .title {
@@ -67,6 +75,8 @@
             font-size: 1.2em;
             border-bottom: 1px solid #222;
             width: 100%;
+            font-family: 'Courier New', monospace;
+            font-weight: normal;
         }
         
         .content {
@@ -77,20 +87,74 @@
             align-items: center;
         }
         
-        #root-sonnet, #root-deepseek, #root-openai {
+        #root-sonnet, #root-deepseek, #root-openai,
+        #root-sonnet-rocket, #root-deepseek-rocket, #root-openai-rocket {
             width: 100%;
             height: calc(100% - 50px);
             display: flex;
             justify-content: center;
             align-items: center;
         }
+
+        h1, h2 {
+            font-family: 'Courier New', monospace;
+            font-weight: normal;
+        }
+
+        .refresh-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .refresh-button:hover {
+            background: #222;
+            color: #fff;
+        }
+
+        .refresh-button::before {
+            content: "↻";
+        }
+
+        .section-refresh {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: 1px solid #666;
+            color: #666;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .section-refresh:hover {
+            background: #222;
+            color: #fff;
+            border-color: #fff;
+        }
     </style>
 </head>
 <body>
-    <h1 class="page-title">A visual comparison of LLMs</h1>
+    <h1 class="page-title">A visual comparison of LLMs, by Jack Whitaker</h1>
     
     <div class="benchmark-section">
         <h2 class="benchmark-title">Benchmark: Rotating Hexagon With a Bouncing Ball</h2>
+        <button class="section-refresh" onclick="restartAllHexagons()">Restart All Hexagons</button>
         <div class="container">
             <div class="column">
                 <div class="title">Claude 3.5 Sonnet</div>
@@ -113,25 +177,86 @@
         </div>
     </div>
 
+    <div class="benchmark-section">
+        <h2 class="benchmark-title">Benchmark: Animated Rocket Launch</h2>
+        <button class="section-refresh" onclick="restartAllRockets()">Restart All Rockets</button>
+        <div class="container">
+            <div class="column">
+                <div class="title">Claude 3.5 Sonnet</div>
+                <div class="content">
+                    <div id="root-sonnet-rocket"></div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="title">DeepSeek R1</div>
+                <div class="content">
+                    <div id="root-deepseek-rocket"></div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="title">OpenAI O3 Mini</div>
+                <div class="content">
+                    <div id="root-openai-rocket"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Load components -->
     <script type="text/babel" src="claude_hexagon.js"></script>
     <script type="text/babel" src="deepseek_hexagon.js"></script>
     <script type="text/babel" src="openai_hexagon.js"></script>
+    <script type="text/babel" src="claude_rocket.js"></script>
+    <script type="text/babel" src="deepseek_rocket.js"></script>
+    <script type="text/babel" src="openai_rocket.js"></script>
     
     <script type="text/babel">
+        function restartSimulation(rootId) {
+            const root = ReactDOM.createRoot(document.getElementById(rootId));
+            const componentMap = {
+                'root-sonnet': window.ClaudeHexagon,
+                'root-deepseek': window.DeepSeekHexagon,
+                'root-openai': window.OpenAIHexagon,
+                'root-sonnet-rocket': window.ClaudeRocket,
+                'root-deepseek-rocket': window.DeepSeekRocket,
+                'root-openai-rocket': window.OpenAIRocket
+            };
+            root.render(React.createElement(componentMap[rootId]));
+        }
+
+        function restartAllHexagons() {
+            restartSimulation('root-sonnet');
+            restartSimulation('root-deepseek');
+            restartSimulation('root-openai');
+        }
+
+        function restartAllRockets() {
+            restartSimulation('root-sonnet-rocket');
+            restartSimulation('root-deepseek-rocket');
+            restartSimulation('root-openai-rocket');
+        }
+
         // Wait for components to be loaded
         setTimeout(() => {
-            // Initialize Claude's component
+            // Initialize Hexagon components
             const rootSonnet = ReactDOM.createRoot(document.getElementById('root-sonnet'));
             rootSonnet.render(React.createElement(window.ClaudeHexagon));
             
-            // Initialize DeepSeek's component
             const rootDeepseek = ReactDOM.createRoot(document.getElementById('root-deepseek'));
             rootDeepseek.render(React.createElement(window.DeepSeekHexagon));
             
-            // Initialize OpenAI's component (once you have it)
             const rootOpenai = ReactDOM.createRoot(document.getElementById('root-openai'));
             rootOpenai.render(React.createElement(window.OpenAIHexagon));
+
+            // Initialize Rocket components
+            const rootSonnetRocket = ReactDOM.createRoot(document.getElementById('root-sonnet-rocket'));
+            rootSonnetRocket.render(React.createElement(window.ClaudeRocket));
+            
+            const rootDeepseekRocket = ReactDOM.createRoot(document.getElementById('root-deepseek-rocket'));
+            rootDeepseekRocket.render(React.createElement(window.DeepSeekRocket));
+            
+            const rootOpenaiRocket = ReactDOM.createRoot(document.getElementById('root-openai-rocket'));
+            rootOpenaiRocket.render(React.createElement(window.OpenAIRocket));
         }, 100);
     </script>
 </body>
