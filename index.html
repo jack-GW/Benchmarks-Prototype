@@ -91,7 +91,8 @@
         
         #root-sonnet, #root-deepseek, #root-openai,
         #root-sonnet-rocket, #root-deepseek-rocket, #root-openai-rocket,
-        #root-sonnet-tower, #root-deepseek-tower, #root-openai-tower {
+        #root-sonnet-tower, #root-deepseek-tower, #root-openai-tower,
+        #root-sonnet-cube, #root-deepseek-cube, #root-openai-cube {
             width: 100%;
             height: calc(100% - 50px);
             display: flex;
@@ -212,6 +213,31 @@
     </div>
 
     <div class="benchmark-section">
+        <h2 class="benchmark-title">Rotating Cube (one shot)</h2>
+        <button class="section-refresh" onclick="restartAllCubes()"></button>
+        <div class="container">
+            <div class="column">
+                <div class="title">Claude 3.5 Sonnet</div>
+                <div class="content">
+                    <div id="root-sonnet-cube"></div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="title">Deepseek R1</div>
+                <div class="content">
+                    <div id="root-deepseek-cube"></div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="title">OpenAI O3 Mini</div>
+                <div class="content">
+                    <div id="root-openai-cube"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="benchmark-section">
         <h2 class="benchmark-title">Animated Rocket Launch (one shot)</h2>
         <button class="section-refresh" onclick="restartAllRockets()"></button>
         <div class="container">
@@ -271,6 +297,9 @@
     <script type="text/babel" src="claude_hexagon.js"></script>
     <script type="text/babel" src="deepseek_hexagon.js"></script>
     <script type="text/babel" src="openai_hexagon.js"></script>
+    <script type="text/babel" src="claude_cube.js"></script>
+    <script type="text/babel" src="deepseek_cube.js"></script>
+    <script type="text/babel" src="openai_cube.js"></script>
     <script type="text/babel" src="claude_rocket.js"></script>
     <script type="text/babel" src="deepseek_rocket.js"></script>
     <script type="text/babel" src="openai_rocket.js"></script>
@@ -285,6 +314,9 @@
                 'root-sonnet': window.Claude_Hexagon,
                 'root-deepseek': window.Deepseek_Hexagon,
                 'root-openai': window.OpenAI_Hexagon,
+                'root-sonnet-cube': window.Claude_Cube,
+                'root-deepseek-cube': window.Deepseek_Cube,
+                'root-openai-cube': window.OpenAI_Cube,
                 'root-sonnet-rocket': window.Claude_Rocket,
                 'root-deepseek-rocket': window.Deepseek_rocket,
                 'root-openai-rocket': window.OpenAI_Rocket,
@@ -299,6 +331,12 @@
             restartSimulation('root-sonnet');
             restartSimulation('root-deepseek');
             restartSimulation('root-openai');
+        }
+
+        function restartAllCubes() {
+            restartSimulation('root-sonnet-cube');
+            restartSimulation('root-deepseek-cube');
+            restartSimulation('root-openai-cube');
         }
 
         function restartAllRockets() {
@@ -324,6 +362,16 @@
             
             const rootOpenai = ReactDOM.createRoot(document.getElementById('root-openai'));
             rootOpenai.render(React.createElement(window.OpenAI_Hexagon));
+
+            // Initialize Cube components
+            const rootSonnetCube = ReactDOM.createRoot(document.getElementById('root-sonnet-cube'));
+            rootSonnetCube.render(React.createElement(window.Claude_Cube));
+            
+            const rootDeepseekCube = ReactDOM.createRoot(document.getElementById('root-deepseek-cube'));
+            rootDeepseekCube.render(React.createElement(window.Deepseek_Cube));
+            
+            const rootOpenaiCube = ReactDOM.createRoot(document.getElementById('root-openai-cube'));
+            rootOpenaiCube.render(React.createElement(window.OpenAI_Cube));
 
             // Initialize Rocket components
             const rootSonnetRocket = ReactDOM.createRoot(document.getElementById('root-sonnet-rocket'));
