@@ -90,7 +90,8 @@
         }
         
         #root-sonnet, #root-deepseek, #root-openai,
-        #root-sonnet-rocket, #root-deepseek-rocket, #root-openai-rocket {
+        #root-sonnet-rocket, #root-deepseek-rocket, #root-openai-rocket,
+        #root-sonnet-tower, #root-deepseek-tower, #root-openai-tower {
             width: 100%;
             height: calc(100% - 50px);
             display: flex;
@@ -235,12 +236,35 @@
         </div>
     </div>
 
+    <div class="benchmark-section">
+        <h2 class="benchmark-title">"Beautiful Tower" (one shot)</h2>
+        <button class="section-refresh" onclick="restartAllTowers()"></button>
+        <div class="container">
+            <div class="column">
+                <div class="title">Claude 3.5 Sonnet</div>
+                <div class="content">
+                    <div id="root-sonnet-tower"></div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="title">DeepSeek R1</div>
+                <div class="content">
+                    <div id="root-deepseek-tower"></div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="title">OpenAI O3 Mini</div>
+                <div class="content">
+                    <div id="root-openai-tower"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="footer-nav">
         <a href="/methodology" class="nav-link">View Methodology</a>
         <a href="https://jackgw.com" class="nav-link">My site</a>
         <a href="https://github.com/jack-GW/Benchmarks-Prototype" class="nav-link">View Code</a>
-
-
     </div>
 
     <!-- Load components -->
@@ -250,6 +274,9 @@
     <script type="text/babel" src="claude_rocket.js"></script>
     <script type="text/babel" src="deepseek_rocket.js"></script>
     <script type="text/babel" src="openai_rocket.js"></script>
+    <script type="text/babel" src="claude_tower.js"></script>
+    <script type="text/babel" src="deepseek_tower.js"></script>
+    <script type="text/babel" src="openai_tower.js"></script>
     
     <script type="text/babel">
         function restartSimulation(rootId) {
@@ -260,7 +287,10 @@
                 'root-openai': window.OpenAI_Hexagon,
                 'root-sonnet-rocket': window.Claude_Rocket,
                 'root-deepseek-rocket': window.DeepSeek_Rocket,
-                'root-openai-rocket': window.OpenAI_Rocket
+                'root-openai-rocket': window.OpenAI_Rocket,
+                'root-sonnet-tower': window.Claude_Tower,
+                'root-deepseek-tower': window.DeepSeek_Tower,
+                'root-openai-tower': window.OpenAI_Tower
             };
             root.render(React.createElement(componentMap[rootId]));
         }
@@ -275,6 +305,12 @@
             restartSimulation('root-sonnet-rocket');
             restartSimulation('root-deepseek-rocket');
             restartSimulation('root-openai-rocket');
+        }
+
+        function restartAllTowers() {
+            restartSimulation('root-sonnet-tower');
+            restartSimulation('root-deepseek-tower');
+            restartSimulation('root-openai-tower');
         }
 
         // Wait for components to be loaded
@@ -298,6 +334,16 @@
             
             const rootOpenaiRocket = ReactDOM.createRoot(document.getElementById('root-openai-rocket'));
             rootOpenaiRocket.render(React.createElement(window.OpenAI_Rocket));
+
+            // Initialize Tower components
+            const rootSonnetTower = ReactDOM.createRoot(document.getElementById('root-sonnet-tower'));
+            rootSonnetTower.render(React.createElement(window.Claude_Tower));
+            
+            const rootDeepseekTower = ReactDOM.createRoot(document.getElementById('root-deepseek-tower'));
+            rootDeepseekTower.render(React.createElement(window.DeepSeek_Tower));
+            
+            const rootOpenaiTower = ReactDOM.createRoot(document.getElementById('root-openai-tower'));
+            rootOpenaiTower.render(React.createElement(window.OpenAI_Tower));
         }, 100);
     </script>
 </body>
