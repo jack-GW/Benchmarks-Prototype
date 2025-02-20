@@ -197,7 +197,7 @@
                 </div>
             </div>
             <div class="column">
-                <div class="title">DeepSeek R1</div>
+                <div class="title">Deepseek R1</div>
                 <div class="content">
                     <div id="root-deepseek"></div>
                 </div>
@@ -222,7 +222,7 @@
                 </div>
             </div>
             <div class="column">
-                <div class="title">DeepSeek R1</div>
+                <div class="title">Deepseek R1</div>
                 <div class="content">
                     <div id="root-deepseek-rocket"></div>
                 </div>
@@ -247,7 +247,7 @@
                 </div>
             </div>
             <div class="column">
-                <div class="title">DeepSeek R1</div>
+                <div class="title">Deepseek R1</div>
                 <div class="content">
                     <div id="root-deepseek-tower"></div>
                 </div>
@@ -286,10 +286,10 @@
                 'root-deepseek': window.Deepseek_Hexagon,
                 'root-openai': window.OpenAI_Hexagon,
                 'root-sonnet-rocket': window.Claude_Rocket,
-                'root-deepseek-rocket': window.DeepSeek_Rocket,
+                'root-deepseek-rocket': window.Deepseek_rocket,
                 'root-openai-rocket': window.OpenAI_Rocket,
                 'root-sonnet-tower': window.Claude_Tower,
-                'root-deepseek-tower': window.DeepSeek_Tower,
+                'root-deepseek-tower': window.Deepseek_Tower,
                 'root-openai-tower': window.OpenAI_Tower
             };
             root.render(React.createElement(componentMap[rootId]));
@@ -330,7 +330,7 @@
             rootSonnetRocket.render(React.createElement(window.Claude_Rocket));
             
             const rootDeepseekRocket = ReactDOM.createRoot(document.getElementById('root-deepseek-rocket'));
-            rootDeepseekRocket.render(React.createElement(window.DeepSeek_Rocket));
+            rootDeepseekRocket.render(React.createElement(window.Deepseek_Rocket));
             
             const rootOpenaiRocket = ReactDOM.createRoot(document.getElementById('root-openai-rocket'));
             rootOpenaiRocket.render(React.createElement(window.OpenAI_Rocket));
@@ -340,7 +340,7 @@
             rootSonnetTower.render(React.createElement(window.Claude_Tower));
             
             const rootDeepseekTower = ReactDOM.createRoot(document.getElementById('root-deepseek-tower'));
-            rootDeepseekTower.render(React.createElement(window.DeepSeek_Tower));
+            rootDeepseekTower.render(React.createElement(window.Deepseek_Tower));
             
             const rootOpenaiTower = ReactDOM.createRoot(document.getElementById('root-openai-tower'));
             rootOpenaiTower.render(React.createElement(window.OpenAI_Tower));

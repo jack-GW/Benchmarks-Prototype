@@ -1,6 +1,6 @@
 const { useRef, useEffect } = React;
 
-const DeepSeek_Rocket = () => {
+const Deepseek_Rocket = () => {
   const canvasRef = useRef(null);
   const rocketY = useRef(400);
   const particles = useRef([]);
@@ -82,4 +82,4 @@ const DeepSeek_Rocket = () => {
   });
 };
 
-window.DeepSeek_Rocket = DeepSeek_Rocket;
+window.Deepseek_Rocket = Deepseek_Rocket;
