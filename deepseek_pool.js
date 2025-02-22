@@ -177,7 +177,7 @@ const Deepseek_Pool = () => {
         fontFamily: 'monospace',
         fontSize: '14px'
       }
-    }, 'Click and drag from cue ball to shoot')
+    }, 'Deepseeks code for this did not function')
   );
 };
 
