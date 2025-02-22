@@ -1,20 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Head section remains unchanged -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LLM Hexagon Comparison</title>
     
-    <!-- React and ReactDOM -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js" crossorigin></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js" crossorigin></script>
-    
-    <!-- Babel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.21.2/babel.min.js"></script>
     
     <style>
-        /* All unchanged styles remain the same */
         body {
             margin: 0;
             padding: 0;
@@ -92,7 +87,8 @@
         #root-sonnet, #root-deepseek, #root-openai,
         #root-sonnet-rocket, #root-deepseek-rocket, #root-openai-rocket,
         #root-sonnet-tower, #root-deepseek-tower, #root-openai-tower,
-        #root-sonnet-cube, #root-deepseek-cube, #root-openai-cube {
+        #root-sonnet-cube, #root-deepseek-cube, #root-openai-cube,
+        #root-sonnet-pool, #root-deepseek-pool, #root-openai-pool {
             width: 100%;
             height: calc(100% - 50px);
             display: flex;
@@ -213,6 +209,31 @@
     </div>
 
     <div class="benchmark-section">
+        <h2 class="benchmark-title">Pool Physics (one shot)</h2>
+        <button class="section-refresh" onclick="restartAllPool()"></button>
+        <div class="container">
+            <div class="column">
+                <div class="title">Claude 3.5 Sonnet</div>
+                <div class="content">
+                    <div id="root-sonnet-pool"></div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="title">Deepseek R1</div>
+                <div class="content">
+                    <div id="root-deepseek-pool"></div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="title">OpenAI O3 Mini</div>
+                <div class="content">
+                    <div id="root-openai-pool"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="benchmark-section">
         <h2 class="benchmark-title">Rotating Cubes (one shot)</h2>
         <button class="section-refresh" onclick="restartAllCubes()"></button>
         <div class="container">
@@ -293,7 +314,6 @@
         <a href="https://github.com/jack-GW/Benchmarks-Prototype" class="nav-link">View Code</a>
     </div>
 
-    <!-- Load components -->
     <script type="text/babel" src="claude_hexagon.js"></script>
     <script type="text/babel" src="deepseek_hexagon.js"></script>
     <script type="text/babel" src="openai_hexagon.js"></script>
@@ -306,6 +326,9 @@
     <script type="text/babel" src="claude_tower.js"></script>
     <script type="text/babel" src="deepseek_tower.js"></script>
     <script type="text/babel" src="openai_tower.js"></script>
+    <script type="text/babel" src="claude_pool.js"></script>
+    <script type="text/babel" src="deepseek_pool.js"></script>
+    <script type="text/babel" src="openai_pool.js"></script>
     
     <script type="text/babel">
         function restartSimulation(rootId) {
@@ -322,7 +345,10 @@
                 'root-openai-rocket': window.OpenAI_Rocket,
                 'root-sonnet-tower': window.Claude_Tower,
                 'root-deepseek-tower': window.Deepseek_Tower,
-                'root-openai-tower': window.OpenAI_Tower
+                'root-openai-tower': window.OpenAI_Tower,
+                'root-sonnet-pool': window.Claude_Pool,
+                'root-deepseek-pool': window.Deepseek_Pool,
+                'root-openai-pool': window.OpenAI_Pool
             };
             root.render(React.createElement(componentMap[rootId]));
         }
@@ -351,9 +377,13 @@
             restartSimulation('root-openai-tower');
         }
 
-        // Wait for components to be loaded
+        function restartAllPool() {
+            restartSimulation('root-sonnet-pool');
+            restartSimulation('root-deepseek-pool');
+            restartSimulation('root-openai-pool');
+        }
+
         setTimeout(() => {
-            // Initialize Hexagon components
             const rootSonnet = ReactDOM.createRoot(document.getElementById('root-sonnet'));
             rootSonnet.render(React.createElement(window.Claude_Hexagon));
             
@@ -363,7 +393,6 @@
             const rootOpenai = ReactDOM.createRoot(document.getElementById('root-openai'));
             rootOpenai.render(React.createElement(window.OpenAI_Hexagon));
 
-            // Initialize Cube components
             const rootSonnetCube = ReactDOM.createRoot(document.getElementById('root-sonnet-cube'));
             rootSonnetCube.render(React.createElement(window.Claude_Cube));
             
@@ -373,7 +402,6 @@
             const rootOpenaiCube = ReactDOM.createRoot(document.getElementById('root-openai-cube'));
             rootOpenaiCube.render(React.createElement(window.OpenAI_Cube));
 
-            // Initialize Rocket components
             const rootSonnetRocket = ReactDOM.createRoot(document.getElementById('root-sonnet-rocket'));
             rootSonnetRocket.render(React.createElement(window.Claude_Rocket));
             
@@ -383,7 +411,6 @@
             const rootOpenaiRocket = ReactDOM.createRoot(document.getElementById('root-openai-rocket'));
             rootOpenaiRocket.render(React.createElement(window.OpenAI_Rocket));
 
-            // Initialize Tower components
             const rootSonnetTower = ReactDOM.createRoot(document.getElementById('root-sonnet-tower'));
             rootSonnetTower.render(React.createElement(window.Claude_Tower));
             
@@ -392,6 +419,15 @@
             
             const rootOpenaiTower = ReactDOM.createRoot(document.getElementById('root-openai-tower'));
             rootOpenaiTower.render(React.createElement(window.OpenAI_Tower));
+
+            const rootSonnetPool = ReactDOM.createRoot(document.getElementById('root-sonnet-pool'));
+            rootSonnetPool.render(React.createElement(window.Claude_Pool));
+            
+            const rootDeepseekPool = ReactDOM.createRoot(document.getElementById('root-deepseek-pool'));
+            rootDeepseekPool.render(React.createElement(window.Deepseek_Pool));
+            
+            const rootOpenaiPool = ReactDOM.createRoot(document.getElementById('root-openai-pool'));
+            rootOpenaiPool.render(React.createElement(window.OpenAI_Pool));
         }, 100);
     </script>
 </body>
